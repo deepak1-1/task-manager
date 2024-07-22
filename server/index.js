@@ -4,6 +4,8 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 import connectDatabase from './lib/database.js'
+import { serverProtectedRouter, serverPublicRouter } from './router/index.js'
+import { authMiddleware } from './utils/index.js'
 
 dotenv.config()
 
@@ -31,6 +33,9 @@ app.post('/test', (req, res) => {
     console.log()
     res.status(200).json({ success: true, message: 'Test Successful' })
 })
+
+app.use('/server', serverPublicRouter)
+app.use('/server', authMiddleware, serverProtectedRouter)
 
 connectDatabase(() => {
     app.listen(PORT, () => {
