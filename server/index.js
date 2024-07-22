@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
 
+import connectDatabase from './lib/database.js'
+
 dotenv.config()
 
 const PORT = process.env.PORT || '4000'
@@ -30,6 +32,8 @@ app.post('/test', (req, res) => {
     res.status(200).json({ success: true, message: 'Test Successful' })
 })
 
-app.listen(PORT, () => {
-    console.log(`Server listening on PORT: ${PORT}`)
+connectDatabase(() => {
+    app.listen(PORT, () => {
+        console.log(`Server listening on PORT: ${PORT}`)
+    })
 })
