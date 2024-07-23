@@ -1,6 +1,12 @@
 import { Router } from 'express'
 
-import { login, logout, register } from './controller.js'
+import {
+    login,
+    logout,
+    signup,
+    googleLogin,
+    googleSignup,
+} from './controller.js'
 import { reqErrorHandlerWrapper } from '../../utils/index.js'
 
 const authPublicRouter = Router()
@@ -8,7 +14,11 @@ const authProtectedRouter = Router()
 
 authPublicRouter.post('/login', reqErrorHandlerWrapper(login))
 
-authPublicRouter.post('/register', reqErrorHandlerWrapper(register))
+authPublicRouter.post('/login-google', reqErrorHandlerWrapper(googleLogin))
+
+authPublicRouter.post('/signup', reqErrorHandlerWrapper(signup))
+
+authPublicRouter.post('/signup-google', reqErrorHandlerWrapper(googleSignup))
 
 authProtectedRouter.post('/logout', reqErrorHandlerWrapper(logout))
 

@@ -10,7 +10,7 @@ export const authMiddleware = async (req, res, next) => {
     const accessToken = req.cookies.access_token
 
     if (!accessToken)
-        return res.status(401).json({ error: 'Unauthenticated User' })
+        return res.status(401).json({ error: 'Unauthorized User' })
 
     try {
         const tokenData = jwt.verify(accessToken, accessTokenSecret)
@@ -23,7 +23,7 @@ export const authMiddleware = async (req, res, next) => {
 
         if (!session) {
             res.clearCookie('access_token')
-            return res.status(401).json({ error: 'Unauthenticated User' })
+            return res.status(401).json({ error: 'Unauthorized User' })
         }
 
         req.user = { ...tokenData, accessToken }
@@ -35,7 +35,7 @@ export const authMiddleware = async (req, res, next) => {
 
         console.log(`[Error in auth middleware]: `, error)
         return res.status(400).json({
-            error: 'Unauthenticated User',
+            error: 'Unauthorized User',
         })
     }
 }

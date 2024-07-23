@@ -19,10 +19,6 @@ const TaskSchema = new Schema(
             type: String,
             default: 'To Do',
         },
-        completed: {
-            type: Boolean,
-            default: true,
-        },
     },
     { timestamps: true }
 )
