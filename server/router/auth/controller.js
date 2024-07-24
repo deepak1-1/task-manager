@@ -74,6 +74,7 @@ export const signup = async (req, res) => {
         lastName = '',
         email = '',
         password = '',
+        confirmPassword = '',
     } = req.body
 
     if (
@@ -84,6 +85,14 @@ export const signup = async (req, res) => {
         !password.trim()
     )
         return res.status(400).json({ success: false, message: 'Invalid Data' })
+
+    if (password !== confirmPassword)
+        return res
+            .status(400)
+            .json({
+                success: false,
+                message: 'Password and confirm password not matches',
+            })
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
 
@@ -183,6 +192,15 @@ export const googleSignup = async (req, res) => {
             .status(200)
             .json({ success: true, message: 'Account Created Successfully' })
     } catch (error) {
-        res.status(401).json({ success: false, error: 'Invalid google token.' })
+        if (error.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email already linked with an Account',
+            })
+        }
+
+        return res
+            .status(401)
+            .json({ success: false, error: 'Invalid google token.' })
     }
 }
