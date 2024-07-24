@@ -106,6 +106,7 @@ export const UserProvider = ({ children }) => {
 
         if (error) {
             console.log(`[Error in login request]: `, error)
+            toast.error(error?.response?.data?.error)
             setIsLoading(false)
             return false
         }
