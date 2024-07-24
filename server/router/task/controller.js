@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 import { Task } from '../../models/index.js'
 
 export const getTasks = async (req, res) => {
@@ -18,19 +20,44 @@ export const getTasks = async (req, res) => {
 
     const tasks = await Task.find(filter).sort({ createdAt: sort })
 
-    res.status(200).json({ success: true, data: tasks })
+    const newTaskFormat = {
+        toDo: [],
+        inProgress: [],
+        done: [],
+    }
+
+    if (typeof tasks === 'object' && tasks.length >= 0) {
+        tasks.map((task) => {
+            switch (task?.status) {
+                case 'TO DO':
+                    newTaskFormat.toDo.push(task)
+                    break
+
+                case 'IN PROGRESS':
+                    newTaskFormat.inProgress.push(task)
+                    break
+
+                case 'DONE':
+                    newTaskFormat.done.push(task)
+                    break
+            }
+        })
+    }
+
+    res.status(200).json({ success: true, data: newTaskFormat })
 }
 
 export const addTask = async (req, res) => {
-    const { title, description } = req.body
+    const { title = '', description = '', dueDate = '' } = req.body
 
-    if (!title || !title.trim())
-        return res.status(400).json({ success: false, error: 'Invalid Title' })
+    if (!title || !title.trim() || !dueDate || !dayjs(dueDate)?.isValid)
+        return res.status(400).json({ success: false, error: 'Invalid Data' })
 
     const task = new Task({
         title,
         description,
         user_id: req.user.userId,
+        dueDate,
     })
     await task.save()
 
@@ -41,18 +68,14 @@ export const addTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
     const { id = null } = req.params
-    const { title = '', description = '' } = req.body
 
-    if (!title || !title.trim() || !id)
+    if (!id)
         return res.status(400).json({
             success: false,
             error: 'Invalid Data',
         })
 
-    const filter = { _id: id }
-    const update = { title, description }
-
-    await Task.updateOne(filter, update)
+    await Task.updateOne({ _id: id }, { $set: req.body })
 
     return res.status(200).json({
         success: true,

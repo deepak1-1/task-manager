@@ -17,10 +17,11 @@ const TaskSchema = new Schema(
         },
         status: {
             type: String,
-            default: 'To Do',
+            default: 'TO DO',
         },
         dueDate: {
             type: Date,
+            required: true,
         },
     },
     { timestamps: true }

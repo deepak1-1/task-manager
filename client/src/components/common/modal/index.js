@@ -1,8 +1,17 @@
 import { useEffect } from 'react'
+import { If, Then, Else } from 'react-if'
+
+import { Loader } from '../loader'
 
 import classes from './styles.module.css'
 
-export const Modal = ({ open, onClose, children }) => {
+export const Modal = ({
+    loading = false,
+    open,
+    onClose,
+    title = null,
+    children,
+}) => {
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === 'Escape') {
@@ -18,7 +27,7 @@ export const Modal = ({ open, onClose, children }) => {
         }
     }, [open, onClose])
 
-    const handleModalBackdropClick = (event) => event.stopPropagation()
+    const handleModalClick = (event) => event.stopPropagation()
 
     if (!open) return null
 
@@ -26,9 +35,19 @@ export const Modal = ({ open, onClose, children }) => {
         <div className={classes['modal-backdrop']} onClick={onClose}>
             <div
                 className={classes['modal-content']}
-                onClick={handleModalBackdropClick}
+                onClick={handleModalClick}
             >
-                {children}
+                <If condition={title}>
+                    <Then>
+                        <div className={classes['title']}>{title}</div>
+                    </Then>
+                </If>
+                <If condition={loading}>
+                    <Then>
+                        <Loader />
+                    </Then>
+                    <Else>{children}</Else>
+                </If>
             </div>
         </div>
     )

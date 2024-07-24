@@ -30,7 +30,6 @@ app.use((req, res, next) => {
 }) // for check in dev environment
 
 app.post('/test', (req, res) => {
-    console.log()
     res.status(200).json({ success: true, message: 'Test Successful' })
 })
 

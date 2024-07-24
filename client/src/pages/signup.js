@@ -53,8 +53,6 @@ const Signup = () => {
         setLoading(false)
     }
 
-    console.log({ form })
-
     if (isLoading) return <Loader fullScreen />
 
     return (
